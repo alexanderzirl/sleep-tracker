@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light" />
+  <title>Schlaflabor – Mein 21-Tage-Tracker</title>
+  <style>
+    :root { --bg:#f4f7f8; --card:#fff; --ink:#142b32; --muted:#61737a; --line:#dce6e8; --teal:#166f68; --teal-soft:#e5f3ef; --blue:#526fbe; --amber:#a66c27; --danger:#ad4146; --shadow:0 8px 30px rgba(15,48,54,.055); }
+    * { box-sizing:border-box }
+    html { scroll-behavior:smooth }
+    body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.48 -apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; }
+    button, input, select, textarea { font:inherit; }
+    button { cursor:pointer; }
+    header { background:linear-gradient(122deg,#103b42,#166e68 72%,#2f8c79); color:white; padding:34px 0 40px; }
+    .wrap { width:min(1100px,calc(100% - 32px)); margin:0 auto; }
+    .eyebrow { text-transform:uppercase; letter-spacing:.13em; font-weight:800; font-size:11px; opacity:.85; }
+    header h1 { font-size:clamp(29px,5vw,44px); line-height:1.12; margin:12px 0 10px; letter-spacing:-.035em; }
+    header p { margin:0; max-width:690px; opacity:.9; font-size:15px; }
+    .top-nav { margin-top:23px; display:flex; gap:8px; flex-wrap:wrap; }
+    .top-nav a { color:white; background:#ffffff21; border:1px solid #ffffff34; padding:7px 12px; font-size:13px; text-decoration:none; border-radius:8px; }
+    .top-nav a:hover { background:#ffffff35; }
+    main { margin-top:-20px; padding-bottom:60px; }
+    .grid { display:grid; gap:18px; }
+    .main-grid { grid-template-columns:minmax(0,1.28fr) minmax(0,.72fr); align-items:start; }
+    .card { background:var(--card); border:1px solid #e3e9eb; box-shadow:var(--shadow); border-radius:17px; padding:23px; }
+    .card + .card { margin-top:18px; }
+    h2 { margin:0 0 4px; font-size:21px; letter-spacing:-.025em; }
+    h3 { margin:0 0 11px; font-size:15px; }
+    .sub { font-size:13px; color:var(--muted); margin:0 0 19px; }
+    .formgrid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px; }
+    .field { min-width:0; }
+    label { display:block; font-weight:650; font-size:13px; margin-bottom:6px; }
+    label span { color:var(--muted); font-weight:400; }
+    input,select,textarea { width:100%; min-height:44px; background:#fff; border:1px solid #ccd9dc; border-radius:9px; padding:10px 11px; color:var(--ink); outline-color:var(--teal); }
+    textarea { min-height:76px; resize:vertical; }
+    input:focus,select:focus,textarea:focus { border-color:var(--teal); box-shadow:0 0 0 3px #166f6817; }
+    .full { grid-column:1/-1 }
+    .check { display:flex; align-items:center; gap:9px; font-size:14px; font-weight:500; padding:4px 0; }
+    .check input { width:17px; height:17px; min-height:0; accent-color:var(--teal); }
+    .hint { font-size:12px; color:var(--muted); margin-top:5px; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:21px; }
+    .btn { border-radius:9px; min-height:43px; padding:10px 15px; font-weight:700; font-size:13px; border:1px solid #cbd9d9; color:var(--ink); background:white; }
+    .btn:hover { filter:brightness(.96); }
+    .btn.primary { background:var(--teal); color:white; border-color:var(--teal); }
+    .btn.danger { border-color:#f0cccc; color:var(--danger); }
+    .btn.small { min-height:34px; padding:6px 10px; font-size:12px; }
+    .msg { margin:10px 0 0; font-size:13px; min-height:1em; }
+    .msg.error { color:var(--danger); }.msg.ok { color:var(--teal); }
+    .phase { background:var(--teal-soft); border:1px solid #cde8e2; border-radius:12px; padding:13px 15px; margin-bottom:18px; }
+    .phase .tag { font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--teal); font-weight:800; }
+    .phase strong { display:block; margin:2px 0 4px; font-size:15px; }
+    .phase p { font-size:12px; margin:0; color:#375a56; }
+    .phase.out { background:#f2f4f6; border-color:#e4e7ea; }
+    .phase.out .tag { color:#54656d; }
+    .stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .stat { background:#f6f9f8; padding:15px; border:1px solid #e8eeee; border-radius:11px; }
+    .stat .value { font-size:27px; font-weight:800; letter-spacing:-.04em; font-variant-numeric:tabular-nums; }
+    .stat .label { font-size:12px; color:var(--muted); line-height:1.35; margin-top:3px; }
+    .section { margin-top:18px; }
+    .charts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+    .chart { background:#fff; border:1px solid #e3e9eb; padding:20px; border-radius:15px; }
+    .chart svg { display:block; width:100%; height:auto; }
+    .chart .empty { display:flex; height:142px; align-items:center; justify-content:center; text-align:center; color:var(--muted); font-size:13px; }
+    .phase-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:11px; }
+    .phase-item { background:white; border:1px solid var(--line); border-radius:12px; padding:14px; }
+    .phase-item .name { font-size:13px; font-weight:800; }
+    .phase-item .num { font-size:24px; letter-spacing:-.03em; font-weight:800; margin-top:7px; }
+    .phase-item small { display:block; font-size:12px; color:var(--muted); }
+    .phase-item .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
+    .entries { display:grid; gap:10px; }
+    .entry { border:1px solid #e2e9ea; border-radius:12px; padding:14px; display:grid; grid-template-columns:1fr auto; gap:10px; }
+    .entry h3 { margin:0 0 6px; font-size:15px; }
+    .entry .meta { font-size:13px; color:#3d5359; }
+    .entry .note { font-size:12px; color:var(--muted); margin-top:6px; overflow-wrap:anywhere; }
+    .pill { background:#e8f4ef; padding:3px 7px; border-radius:6px; font-size:11px; color:#286f61; margin-left:6px; white-space:nowrap; }
+    .entry-actions { display:flex; flex-direction:column; gap:7px; }
+    .empty-note { color:var(--muted); font-size:13px; padding:10px 0; }
+    details { margin-top:12px; border-top:1px solid var(--line); padding-top:13px; }
+    summary { font-size:13px; color:var(--teal); font-weight:700; cursor:pointer; }
+    .backup { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .warning { border-radius:10px; background:#fff4e3; border:1px solid #e7cfad; color:#735322; font-size:13px; padding:12px; margin:14px 0 0; }
+    .footer { font-size:12px; color:#6b797d; margin-top:15px; }
+    .legend { display:flex; justify-content:space-between; color:var(--muted); font-size:11px; }
+    hr { border:0; border-top:1px solid var(--line); margin:17px 0; }
+    @media(max-width:800px) { .main-grid { grid-template-columns:1fr; } .charts { grid-template-columns:1fr; } .phase-grid { grid-template-columns:1fr; } }
+    @media(max-width:450px) { .wrap { width:min(100% - 22px, 1100px); } .card { padding:17px; } .formgrid { gap:13px; } .stats { grid-template-columns:1fr 1fr; } .stat { padding:11px; } .stat .value {font-size:24px} input,select,textarea { font-size:16px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="eyebrow">Dein privates Schlafprotokoll</div>
+      <h1>Schlaflabor<span aria-hidden="true"> · </span>21 Tage</h1>
+      <p>Weniger raten, mehr erkennen: tatsächliches Erwachen, geschätzter Schlaf und Erholung. Ohne Konto, ohne Cloud, ohne Tracker-Zwang.</p>
+      <nav class="top-nav" aria-label="Navigation"><a href="#eingabe">Neue Nacht</a><a href="#auswertung">Auswertung</a><a href="#verlauf">Verlauf</a><a href="#sicherung">Datensicherung</a></nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <div id="storageWarning" class="warning" role="status" hidden></div>
+    <div class="grid main-grid">
+      <section class="card" id="eingabe" aria-labelledby="formTitle">
+        <h2 id="formTitle">Morgens kurz eintragen</h2>
+        <p class="sub">Dauer: etwa 45 Sekunden. Nur das eintragen, was du wirklich weißt. Schätzungen sind erlaubt.</p>
+        <div class="phase" id="phaseInfo"></div>
+        <form id="sleepForm" novalidate>
+          <div class="formgrid">
+            <div class="field full">
+              <label for="nightDate">Nacht vom <span>(Datum des Zubettgehens)</span></label>
+              <input id="nightDate" name="nightDate" type="date" required />
+            </div>
+            <div class="field">
+              <label for="sleepOnset">Eingeschlafen etwa</label>
+              <input id="sleepOnset" type="time" required value="23:00" />
+            </div>
+            <div class="field">
+              <label for="firstWake">Erstes längeres Erwachen</label>
+              <input id="firstWake" type="time" required value="05:30" />
+            </div>
+            <div class="field">
+              <label for="getUp">Endgültig aufgestanden</label>
+              <input id="getUp" type="time" required value="06:45" />
+            </div>
+            <div class="field">
+              <label for="resleepMinutes">Danach noch geschlafen? <span>(Min.)</span></label>
+              <input id="resleepMinutes" type="number" min="0" max="600" step="5" placeholder="0 oder leer = unklar" />
+              <div class="hint">0 = sicher nicht; leer = schwer einschätzbar.</div>
+            </div>
+            <div class="field">
+              <label for="recovery">Morgens erholt? <span>(0–10)</span></label>
+              <select id="recovery" required><option value="">Bitte wählen</option><option value="0">0 · völlig erschöpft</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 · mittelmäßig</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10 · sehr erholt</option></select>
+            </div>
+            <div class="field">
+              <label for="sleepComplex">Schaebens Schlaf-Komplex</label>
+              <select id="sleepComplex"><option value="no">Nicht genommen</option><option value="yes">Genommen</option><option value="unknown">Nicht erfasst</option></select>
+            </div>
+          </div>
+          <details>
+            <summary>Optionale Angaben (nur bei Bedarf)</summary>
+            <div class="formgrid" style="margin-top:15px">
+              <div class="field"><label for="caffeine">Letzter Kaffee/Koffein</label><input type="time" id="caffeine" /></div>
+              <div class="field"><label for="nightUrine">Toilettengänge nachts</label><input type="number" id="nightUrine" min="0" max="20" placeholder="z. B. 1" /></div>
+              <div class="field"><label for="unusual">Besonderheit</label><select id="unusual"><option value="normal">Normaler Tag</option><option value="sick">Krank / Infekt</option><option value="travel">Reise / Ausnahme</option><option value="other">Sonstige Ausnahme</option></select></div>
+              <div class="field"><label for="sleepiness">Müdigkeit tagsüber (0–10)</label><input type="number" id="sleepiness" min="0" max="10" placeholder="Optional" /></div>
+              <div class="field full"><label for="notes">Notiz</label><textarea id="notes" placeholder="Nur Besonderheiten, keine lange Analyse."></textarea></div>
+            </div>
+          </details>
+          <div class="actions">
+            <button class="btn primary" id="saveBtn" type="submit">Nacht speichern</button>
+            <button class="btn" id="resetBtn" type="button">Eingabe zurücksetzen</button>
+          </div>
+          <p id="formMessage" class="msg" aria-live="polite"></p>
+        </form>
+      </section>
+      <aside>
+        <section class="card" id="auswertung">
+          <h2>Dein Fortschritt</h2><p class="sub">Bewusst nur die Messgrößen, die uns wirklich helfen.</p>
+          <div class="stats">
+            <div class="stat"><div class="value" id="countStat">0</div><div class="label">erfasste Nächte</div></div>
+            <div class="stat"><div class="value" id="firstStat">–</div><div class="label">Ø Schlaf bis erstes Erwachen</div></div>
+            <div class="stat"><div class="value" id="totalStat">–</div><div class="label">Ø subjektiv geschätzter Schlaf*</div></div>
+            <div class="stat"><div class="value" id="recoveryStat">–</div><div class="label">Ø morgendliche Erholung / 10</div></div>
+          </div>
+          <p class="hint">*Nur Nächte mit einer Schätzung für den Schlaf nach dem ersten Erwachen; keine Garmin-Daten.</p>
+          <hr />
+          <h3>Versuchsplan</h3>
+          <div class="field"><label for="planStart">Startdatum der 21 Tage</label><input type="date" id="planStart" /></div>
+          <div class="hint">Phase 1 (Tage 1–7): Schlaf-Komplex pausieren. Phase 2 (Tage 8–14): bei Schläfrigkeit früher ins Bett. Phase 3 (Tage 15–21): Koffein nur früh, Schlafenszeit zurück auf Ausgangsniveau. Keine anderen bewussten Änderungen parallel.</div>
+          <p class="hint"><strong>Hinweis:</strong> Eine Phase kann nur vergleichbar sein, wenn du sie tatsächlich so umgesetzt hast. Das Präparat wird deshalb auch separat erfasst.</p>
+        </section>
+      </aside>
+    </div>
+    <section class="section charts" aria-label="Zeitverläufe">
+      <div class="chart"><h2>Schlaf am Stück</h2><p class="sub">Von Einschlafen bis zum ersten längeren Erwachen · Stunden</p><div id="sleepChart"></div></div>
+      <div class="chart"><h2>Morgenerholung</h2><p class="sub">Deine subjektive Bewertung · 0 bis 10</p><div id="recoveryChart"></div></div>
+    </section>
+    <section class="section card" aria-labelledby="phasesTitle">
+      <h2 id="phasesTitle">Vergleich der Testphasen</h2><p class="sub">Ein grober Vergleich, keine Kausalitätsmessung. Krankheit und Ausnahmetage werden hier ausgelassen.</p>
+      <div class="phase-grid" id="phaseComparison"></div>
+    </section>
+    <section class="section card" id="verlauf">
+      <h2>Deine Einträge</h2><p class="sub">Du kannst jeden Eintrag jederzeit bearbeiten. Die Einträge werden nur in diesem Browser gespeichert.</p>
+      <div class="entries" id="entryList"></div>
+    </section>
+    <section class="section card" id="sicherung">
+      <h2>Datensicherung & Export</h2><p class="sub">Kein Cloud-Sync. Daten bleiben in diesem Browserprofil. Exportiere regelmäßig ein Backup, besonders auf dem iPhone.</p>
+      <div class="backup"><button class="btn" id="csvBtn" type="button">CSV für Auswertung</button><button class="btn" id="jsonBtn" type="button">JSON-Backup</button><button class="btn" id="importBtn" type="button">Backup importieren</button><input type="file" id="importFile" accept=".json,application/json" hidden /></div>
+      <hr />
+      <button class="btn danger small" id="clearBtn" type="button">Alle Einträge löschen</button>
+      <div class="footer">Alle Berechnungen erfolgen auf deinem Gerät. Beim Import wird der vorhandene Datenbestand nach Bestätigung ersetzt. Im privaten Browsermodus oder bei Löschung der Websitedaten können Einträge verloren gehen. Die Seite ist ein persönliches Protokoll, keine medizinische Diagnose.</div>
+    </section>
+  </main>
+<script>
+(()=>{'use strict';
+const KEY='schlaflabor21_v1';
+const $=id=>document.getElementById(id);
+const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+const addDays=(ds,n)=>{const d=new Date(ds+'T12:00:00'); d.setDate(d.getDate()+n); return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
+const daysBetween=(a,b)=>(Date.parse(a+'T12:00:00Z')-Date.parse(b+'T12:00:00Z'))/86400000;
+const isoDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s)&&!Number.isNaN(Date.parse(s+'T00:00:00Z'));
+const tm=s=>{if(!/^\d{2}:\d{2}$/.test(s||''))return NaN; const [h,m]=s.split(':').map(Number);return h<24&&m<60?h*60+m:NaN};
+const formatMin=n=>{if(!Number.isFinite(n))return '–';const m=Math.round(n);return `${Math.floor(m/60)}:${String(m%60).padStart(2,'0')} h`;};
+const fmtDate=s=>{if(!isoDate(s))return s; return new Date(s+'T12:00:00').toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'})};
+const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const phaseLabels={1:'Schlaf-Komplex pausieren',2:'Früheres Schlafangebot',3:'Koffein bis 10 Uhr',4:'Nachbeobachtung',0:'Vor Testbeginn'};
+let state={planStart:today(),records:[]},editing=null, storageOK=true;
+try{const test='__schlaflabor_test__';localStorage.setItem(test,'1');localStorage.removeItem(test);const saved=localStorage.getItem(KEY);if(saved){const parsed=JSON.parse(saved);if(parsed&&typeof parsed==='object'){state.planStart=isoDate(parsed.planStart)?parsed.planStart:state.planStart;state.records=Array.isArray(parsed.records)?parsed.records.filter(r=>r&&isoDate(r.date)):[];}}}catch(e){storageOK=false;}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(state)); storageOK=true;showStorageNotice();return true;}catch(e){storageOK=false;showStorageNotice();return false;}}
+function showStorageNotice(){const warning=$('storageWarning');let m='';if(!storageOK)m='Achtung: Der Browser lässt lokale Speicherung hier nicht zu. Einträge bleiben nur bis zum Schließen erhalten. Nutze die JSON-Sicherung oder öffne die Seite über eine feste HTTPS-Adresse.';else if(location.protocol==='file:')m='Diese Datei läuft lokal (file://). Je nach Browser, insbesondere auf iPhones, kann die dauerhafte Speicherung eingeschränkt sein. Bitte regelmäßig JSON-Backups exportieren oder die Seite auf einer eigenen HTTPS-Adresse bereitstellen.';warning.hidden=!m;warning.textContent=m;}
+function phase(date){const i=daysBetween(date,state.planStart);return i<0?0:i<7?1:i<14?2:i<21?3:4;}
+function sleepMinutes(r){const s=tm(r.onset),w=tm(r.wake),u=tm(r.up);if(!Number.isFinite(s)||!Number.isFinite(w)||!Number.isFinite(u))return null;let first=w<s?w+1440:w,final=u<s?u+1440:u;if(final<first)final+=1440;const initial=first-s,awakeAfter=final-first;if(initial<1||initial>1000||awakeAfter<0||awakeAfter>1000||initial+awakeAfter>1440)return null;return {initial,awakeAfter,final,estimated:r.resleep===null?null:initial+r.resleep};}
+function setPhaseInfo(){const date=$('nightDate').value||today(),p=phase(date),d=daysBetween(date,state.planStart);const label=p>=1&&p<=3?`Tag ${d+1} von 21 · Phase ${p}`:p===0?'Vor dem Test':'Nach dem Test';const descriptions={1:'Schlaf-Komplex pausieren. Sonstige Routinen möglichst konstant halten.',2:'Nur bei echter Schläfrigkeit früher schlafen gehen; nicht wach ins Bett zwingen.',3:'Letzten Kaffee bis 10 Uhr; übliche Schlafenszeit wiederherstellen.',4:'Freie Nachbeobachtung — Test ist abgeschlossen.',0:'Diese Nacht liegt vor dem Teststart.'};$('phaseInfo').className='phase'+(p===0||p===4?' out':'');$('phaseInfo').innerHTML=`<div class="tag">${safe(label)}</div><strong>${safe(phaseLabels[p])}</strong><p>${safe(descriptions[p])}</p>`;}
+function clearForm(){editing=null;$('sleepForm').reset();$('nightDate').value=addDays(today(),-1);$('sleepOnset').value='23:00';$('firstWake').value='05:30';$('getUp').value='06:45';$('resleepMinutes').value='';$('sleepComplex').value='no';$('saveBtn').textContent='Nacht speichern';$('formMessage').textContent='';$('formMessage').className='msg';setPhaseInfo();}
+function readRecord(){const date=$('nightDate').value,onset=$('sleepOnset').value,wake=$('firstWake').value,up=$('getUp').value;const raw=$('resleepMinutes').value, resleep=raw===''?null:Number(raw);const recovery=Number($('recovery').value);if(!isoDate(date)||!Number.isFinite(tm(onset))||!Number.isFinite(tm(wake))||!Number.isFinite(tm(up))||$('recovery').value==='')throw Error('Bitte Datum, drei Uhrzeiten und morgendliche Erholung ausfüllen.');if(!Number.isInteger(recovery)||recovery<0||recovery>10)throw Error('Erholung muss zwischen 0 und 10 liegen.');if(resleep!==null&&(!Number.isFinite(resleep)||resleep<0))throw Error('Die geschätzten Schlafminuten dürfen nicht negativ sein.');const r={date,onset,wake,up,resleep,recovery,complex:$('sleepComplex').value,caffeine:$('caffeine').value,nightUrine:$('nightUrine').value===''?null:Number($('nightUrine').value),unusual:$('unusual').value,sleepiness:$('sleepiness').value===''?null:Number($('sleepiness').value),notes:$('notes').value.trim().slice(0,5000)};const dur=sleepMinutes(r);if(!dur)throw Error('Bitte die Reihenfolge prüfen: Erst einschlafen, dann erwachen, dann endgültig aufstehen (maximal 24 Stunden).');if(r.resleep!==null&&r.resleep>dur.awakeAfter)throw Error('Die zusätzlichen Schlafminuten können nicht länger sein als die Zeit zwischen Erwachen und Aufstehen.');return r;}
+function notify(message,ok){$('formMessage').textContent=message;$('formMessage').className='msg '+(ok?'ok':'error');}
+$('sleepForm').addEventListener('submit',e=>{e.preventDefault();try{const r=readRecord();const idx=state.records.findIndex(x=>x.date===r.date);if(idx>=0&&editing!==r.date&&!confirm('Für diese Nacht existiert bereits ein Eintrag. Überschreiben?'))return;if(idx>=0)state.records[idx]=r;else state.records.push(r);state.records.sort((a,b)=>a.date.localeCompare(b.date));const ok=persist();const d=r.date;clearForm();render();notify(ok?`Nacht vom ${fmtDate(d)} gespeichert.`:`Nacht gespeichert, aber lokale Speicherung ist hier nicht verfügbar. Bitte JSON-Backup exportieren.`,ok);}catch(err){notify(err.message,false);}});
+$('resetBtn').addEventListener('click',clearForm);
+$('nightDate').addEventListener('change',setPhaseInfo);
+$('planStart').addEventListener('change',e=>{if(!isoDate(e.target.value))return;state.planStart=e.target.value;persist();setPhaseInfo();render();});
+function mean(ar){return ar.length?ar.reduce((a,b)=>a+b,0)/ar.length:null;}
+function renderStats(){const r=state.records, durations=r.map(sleepMinutes).filter(Boolean);$('countStat').textContent=r.length;$('firstStat').textContent=durations.length?formatMin(mean(durations.map(d=>d.initial))):'–';const totals=durations.filter(d=>d.estimated!==null).map(d=>d.estimated);$('totalStat').textContent=totals.length?formatMin(mean(totals)):'–';$('recoveryStat').textContent=r.length?mean(r.map(x=>Number(x.recovery))).toFixed(1):'–';}
+function plot(containerId,getVal,max,units){const container=$(containerId);const values=state.records.slice().sort((a,b)=>a.date.localeCompare(b.date)).slice(-21).map(r=>({date:r.date,v:getVal(r),p:phase(r.date)})).filter(x=>Number.isFinite(x.v));if(values.length===0){container.innerHTML='<div class="empty">Noch keine Werte vorhanden.</div>';return;}const w=470,h=198,l=36,r=12,t=15,b=30,pw=w-l-r,ph=h-t-b;const x=i=>l+(values.length===1?pw/2:i*pw/(values.length-1)),y=v=>t+ph-(Math.min(max,Math.max(0,v))/max)*ph;let svg=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Zeitverlauf ${safe(units)}">`;for(let k=0;k<=4;k++){const value=(max*k/4),cy=y(value);svg+=`<line x1="${l}" y1="${cy}" x2="${w-r}" y2="${cy}" stroke="#e7edef"/><text x="${l-7}" y="${cy+4}" font-size="11" text-anchor="end" fill="#657b80">${value%1===0?value:value.toFixed(1)}</text>`;}if(values.length>1)svg+=`<polyline points="${values.map((v,i)=>x(i)+','+y(v.v)).join(' ')}" fill="none" stroke="#216e69" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round"/>`;const colors={0:'#8b9999',1:'#247c6f',2:'#4b74be',3:'#b98238',4:'#8b9999'};values.forEach((v,i)=>{svg+=`<circle cx="${x(i)}" cy="${y(v.v)}" r="4.7" stroke="white" stroke-width="1.4" fill="${colors[v.p]}"><title>${safe(fmtDate(v.date))}: ${v.v.toFixed(1)} ${safe(units)}</title></circle>`;});svg+=`<text x="${l}" y="${h-7}" font-size="11" fill="#657b80">${safe(values[0].date.slice(5).replace('-','.'))}</text><text x="${w-r}" y="${h-7}" text-anchor="end" font-size="11" fill="#657b80">${safe(values[values.length-1].date.slice(5).replace('-','.'))}</text></svg>`;container.innerHTML=svg;}
+function renderPhases(){const colors=['#247c6f','#4b74be','#b98238'];$('phaseComparison').innerHTML=[1,2,3].map((p,i)=>{const r=state.records.filter(a=>phase(a.date)===p&&a.unusual==='normal');const values=r.map(a=>sleepMinutes(a)).filter(Boolean),first=mean(values.map(v=>v.initial)),rec=mean(r.map(a=>a.recovery));return `<div class="phase-item"><div class="name"><span class="dot" style="background:${colors[i]}"></span>Phase ${p}</div><small>${safe(phaseLabels[p])}</small><div class="num">${rec===null?'–':rec.toFixed(1)} <span style="font-size:12px;font-weight:500;color:#687b7f">/ 10</span></div><small>Ø Erholung · ${r.length} Nächte</small><hr/><strong>${first===null?'–':formatMin(first)}</strong><small>Ø Schlaf bis zum ersten Erwachen</small></div>`;}).join('');}
+function renderEntries(){const sorted=state.records.slice().sort((a,b)=>b.date.localeCompare(a.date));if(!sorted.length){$('entryList').innerHTML='<p class="empty-note">Noch keine Einträge. Deine erste Nacht kannst du oben erfassen.</p>';return;}$('entryList').innerHTML=sorted.map(a=>{const d=sleepMinutes(a),p=phase(a.date),comp=a.complex==='yes'?'Schlaf-Komplex: ja':a.complex==='no'?'Schlaf-Komplex: nein':'Schlaf-Komplex: unbekannt';const rest=a.resleep===null?'Zusätzlicher Schlaf: unklar':'Zusätzlicher Schlaf: '+a.resleep+' Min.';return `<article class="entry"><div><h3>${safe(fmtDate(a.date))}<span class="pill">${p===0?'Vorher':p===4?'Danach':'Phase '+p}</span></h3><div class="meta">${safe(a.onset)} → ${safe(a.wake)} · <strong>${d?formatMin(d.initial):'–'} am Stück</strong></div><div class="meta">Aufgestanden ${safe(a.up)} · Erholung <strong>${a.recovery}/10</strong></div><div class="note">${safe(rest)} · ${safe(comp)}${a.unusual!=='normal'?' · Ausnahme: '+safe(a.unusual):''}</div>${a.notes?`<div class="note">${safe(a.notes)}</div>`:''}</div><div class="entry-actions"><button class="btn small" type="button" data-edit="${safe(a.date)}">Bearbeiten</button><button class="btn danger small" type="button" data-delete="${safe(a.date)}">Löschen</button></div></article>`}).join('');}
+function render(){renderStats();plot('sleepChart',r=>sleepMinutes(r)?.initial/60,10,'Stunden');plot('recoveryChart',r=>Number(r.recovery),10,'Punkte');renderPhases();renderEntries();}
+$('entryList').addEventListener('click',e=>{const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');if(del){const date=del.dataset.delete;if(confirm('Eintrag vom '+fmtDate(date)+' wirklich löschen?')){state.records=state.records.filter(r=>r.date!==date);persist();render();}return;}if(edit){const r=state.records.find(x=>x.date===edit.dataset.edit);if(!r)return;editing=r.date;[['nightDate',r.date],['sleepOnset',r.onset],['firstWake',r.wake],['getUp',r.up],['resleepMinutes',r.resleep??''],['recovery',r.recovery],['sleepComplex',r.complex],['caffeine',r.caffeine||''],['nightUrine',r.nightUrine??''],['unusual',r.unusual||'normal'],['sleepiness',r.sleepiness??''],['notes',r.notes||'']].forEach(([id,val])=>$(id).value=val);$('saveBtn').textContent='Änderungen speichern';$('formMessage').textContent='Eintrag bearbeiten: '+fmtDate(r.date);$('formMessage').className='msg';setPhaseInfo();$('eingabe').scrollIntoView({behavior:'smooth',block:'start'});}});
+function download(name,body,type){const blob=new Blob([body],{type});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+$('jsonBtn').addEventListener('click',()=>download('schlaflabor-backup-'+today()+'.json',JSON.stringify({version:1,exportedAt:new Date().toISOString(),...state},null,2),'application/json;charset=utf-8'));
+const csvCell=v=>{let s=String(v??'');if(/^[\s]*[=+@-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
+$('csvBtn').addEventListener('click',()=>{const cols=[['date','Nacht vom'],['phase','Phase'],['onset','Eingeschlafen'],['wake','Erstes Erwachen'],['up','Aufgestanden'],['first','Schlaf am Stück (Min)'],['resleep','Weitere Schlafminuten (geschätzt)'],['total','Gesamtschlaf (Min, geschätzt)'],['recovery','Erholung 0-10'],['complex','Schlaf-Komplex'],['caffeine','Letztes Koffein'],['nightUrine','Toilettengänge'],['unusual','Besonderheit'],['sleepiness','Müdigkeit 0-10'],['notes','Notiz']];const data=state.records.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(r=>{const d=sleepMinutes(r);return {...r,phase:phase(r.date),first:d?.initial??'',total:d?.estimated??''}});const lines=[cols.map(([,h])=>csvCell(h)).join(';'),...data.map(row=>cols.map(([key])=>csvCell(row[key])).join(';'))];download('schlaflabor-auswertung-'+today()+'.csv','\ufeff'+lines.join('\r\n'),'text/csv;charset=utf-8');});
+$('importBtn').addEventListener('click',()=>$('importFile').click());
+$('importFile').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(!obj||!Array.isArray(obj.records)||!isoDate(obj.planStart)||obj.records.some(r=>!r||!isoDate(r.date)||!Number.isInteger(Number(r.recovery))||!sleepMinutes(r)))throw Error('Keine gültige Schlaflabor-Backupdatei.');if(!confirm(`Backup mit ${obj.records.length} Nächten importieren? Vorhandene Einträge werden ersetzt.`))return;state={planStart:obj.planStart,records:obj.records};$('planStart').value=state.planStart;persist();clearForm();render();alert('Backup importiert.');}catch(err){alert('Import fehlgeschlagen: '+err.message);}finally{e.target.value='';}});
+$('clearBtn').addEventListener('click',()=>{if(confirm('Wirklich alle Schlafdaten aus diesem Browser löschen? Vorher am besten JSON-Backup erstellen.')){state.records=[];persist();render();clearForm();}});
+$('planStart').value=state.planStart;clearForm();render();showStorageNotice();
+})();
+</script>
+</body>
+</html>
